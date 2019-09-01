@@ -1,0 +1,86 @@
+/* 
+	14.1 
+*/
+
+SELECT TenantName 
+FROM Tenants
+INNER JOIN
+	(
+		SELECT TenantID
+	 	FROM AptTenants
+	 	GROUP BY TenantID
+	 	HAVING count(*) > 1
+	) C
+ON Tenants.TenantsID = C.TenantsID
+
+/* 
+	14.2 
+*/
+
+SELECT BuildingName, OpenRequests FROM Buildings 
+INNER JOIN 
+( 
+    SELECT BuildingID, COUNT(*) AS 'OpenRequests' FROM `Requests` 
+    INNER JOIN Apartments 	  
+    ON Requests.AptID = Apartments.AptID 
+    WHERE Status = 'Closed' 
+    GROUP BY BuildingID 
+) C 
+ON C.BuildingID = Buildings.BuildingID
+
+
+/* 
+	14.3 
+*/
+
+UPDATE Requests
+SET Status = 'Closed'
+WHERE AptID IN (SELECT AptID FROM Apartments WHERE BuildingID = 2)
+
+	/*	^
+		|
+
+		 This AptID relates to the AptID in Requests */
+
+/*
+	14.4
+
+	A JOIN is used to combine the results of two tables.
+
+	INNER JOIN - results show only data where criteria match.
+	LEFT JOIN - results show data where criteria match and all data from left table.
+	RIGHT JOIN - results show data where criteria match and all data from right table.
+	OUTER JOIN - results show everything from both tables.
+*/	
+
+/*
+	14.5
+
+	Denormalization - is a data optimization technique in which we add redundant data
+	to one or more tables. This avoids costly joins, therefore read time is faster.
+
+	Normalization - storing data in separate logical tables to minimize redundant data.
+
+	
+	Denormalization Pros:
+
+	- Retrieving data is faster since we do fewer joins
+	- Queries to retrieve are simplier 
+
+	Denormalization Cons:
+
+	- Updates and inserts are more expensive
+	- Update and insert queries can be harder to write
+	- Data may be inconsistent
+	- More storage
+*/
+
+
+
+
+	
+
+
+
+
+
